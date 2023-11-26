@@ -31,38 +31,43 @@ public class loginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         try {
-            // Create a prepared statement to query the database for the hashed password
             PreparedStatement ps = conn.prepareStatement("SELECT password FROM Students WHERE email = ?");
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 String hashedPasswordFromDB = rs.getString("password");
-                // Compare hashed password from database with entered password
-                if (hashedPasswordFromDB.equals(password)) {
+                // Use a secure method to compare hashed passwords (e.g., BCrypt)
+                // Replace this comparison with your actual password comparison method
+                if (isPasswordCorrect(password, hashedPasswordFromDB)) {
                     // Authentication successful, create a session and redirect
                     request.getSession().setAttribute("email", email);
                     response.sendRedirect("/students"); // Redirect to students' page
                     return;
+                } else {
+                    // Incorrect password
+                    response.sendRedirect("/login.html?error=incorrect_password");
+                    return;
                 }
+            } else {
+                // Email not found in the database
+                response.sendRedirect("/login.html?error=email_not_found");
+                return;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // Incorrect credentials, redirect back to login page with an error parameter
-        response.sendRedirect("/login.html?error=1");
+        // Authentication failed due to an unknown reason
+        response.sendRedirect("/login.html?error=authentication_failed");
     }
 
-    @Override
-    public void destroy() {
-        // Close database connection in the destroy method
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    // Implement a secure method to compare hashed passwords
+    private boolean isPasswordCorrect(String enteredPassword, String hashedPasswordFromDB) {
+        // Implement your password comparison logic here (e.g., using a library like BCrypt)
+        // Return true if passwords match; otherwise, return false
+        // Example: return BCrypt.checkpw(enteredPassword, hashedPasswordFromDB);
+        // Replace this with your actual password comparison logic
+        return enteredPassword.equals(hashedPasswordFromDB);
     }
 }

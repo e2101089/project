@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,47 +29,41 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("username") != null) {
-            try {
-                String pathInfo = request.getPathInfo();
-                if (pathInfo != null) {
-                    String[] pathParts = pathInfo.split("/");
-                    if (pathParts.length == 2) {
-                        Long studentId = Long.parseLong(pathParts[1]);
-                        // Logic to fetch student details by ID
-                        PreparedStatement ps = conn.prepareStatement("SELECT * FROM students WHERE id = ?");
-                        ps.setLong(1, studentId);
-                        ResultSet rs = ps.executeQuery();
-                        if (rs.next()) {
-                            // Retrieve student details and return as JSON or HTML response
-                            response.getWriter().println("Student details for ID: " + studentId);
-                        } else {
-                            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                            response.getWriter().println("Student not found");
-                        }
-                        ps.close();
-                    } else {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        response.getWriter().println("Invalid URL");
-                    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	 String studentIdParam = request.getParameter("studentId"); // Assuming studentId is passed as a parameter
+    	 System.out.println(studentIdParam);
+    	    try {
+    	        int studentId = Integer.parseInt(studentIdParam); // Convert the parameter to an integer
+
+    	        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Students WHERE student_id = ?");
+    	        ps.setInt(1, studentId);
+    	        ResultSet rs = ps.executeQuery();
+
+    	        if (rs.next()) {
+    	            // Retrieve data for the student with the given ID
+    	            int id = rs.getInt("student_id");
+    	            String name = rs.getString("name");
+    	            String email = rs.getString("email");
+                    RequestDispatcher reqDis = request.getRequestDispatcher("StudentList");;                    // Display student details in the servlet's response
+                    request.setAttribute("student_id", studentId);
+                    request.setAttribute("name", name);
+                    request.setAttribute("email", email);
+                    reqDis.forward(request, response);
+                
+                    // Display other details as needed
                 } else {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().println("Invalid URL");
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    response.getWriter().println("Student details not found");
                 }
-            } catch (SQLException | NumberFormatException e) {
+                ps.close();
+            } catch (SQLException e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().println("Error retrieving student details");
             }
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().println("Unauthorized access");
+    
         }
-        
-    }
-
+  
     // Similar logic for doPost and doDelete methods...
 
     @Override

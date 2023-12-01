@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,52 +20,43 @@ public class CourseServlet extends HttpServlet {
     @Override
     public void init() {
         try {
+        	Class.forName("org.mariadb.jdbc.Driver");
             conn = DriverManager.getConnection("jdbc:mariadb://mariadb.vamk.fi/e2101089_java_demo", "e2101089", "yeBvxVDHGWV");
             System.out.println(conn);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("username") != null) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	String courseIdParam = request.getParameter("courseId"); // Assuming studentId is passed as a parameter
+   	 	System.out.println(courseIdParam);
             try {
-                String pathInfo = request.getPathInfo();
-                if (pathInfo != null) {
-                    String[] pathParts = pathInfo.split("/");
-                    if (pathParts.length == 2) {
-                        Long courseId = Long.parseLong(pathParts[1]);
-                        // Logic to fetch course details by ID
-                        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Courses WHERE id = ?");
-                        ps.setLong(1, courseId);
-                        ResultSet rs = ps.executeQuery();
-                        if (rs.next()) {
-                            // Retrieve course details and return as JSON or HTML response
-                            response.getWriter().println("Course details for ID: " + courseId);
-                        } else {
-                            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                            response.getWriter().println("Course not found");
-                        }
-                        ps.close();
-                    } else {
-                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                        response.getWriter().println("Invalid URL");
-                    }
+            	int courseId = Integer.parseInt(courseIdParam); // Convert the parameter to an integer
+     	        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Courses WHERE course_id = ?");
+     	        ps.setInt(1,courseId);
+     	        ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                	int id = rs.getInt("course_id");
+                	String name = rs.getString("name");
+                	String teacher = rs.getString("teacher");
+                	 RequestDispatcher reqDis = request.getRequestDispatcher("CourseList");;                    // Display student details in the servlet's response
+                     request.setAttribute("course_id", courseId);
+                     request.setAttribute("name", name);
+                     request.setAttribute("teacher", teacher);
+                     reqDis.forward(request, response);
                 } else {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    response.getWriter().println("Invalid URL");
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    response.getWriter().println("Course details not found");
                 }
-            } catch (SQLException | NumberFormatException e) {
+                ps.close();
+            } catch (SQLException e) {
                 e.printStackTrace();
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.getWriter().println("Error retrieving course details");
             }
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().println("Unauthorized access");
+    
         }
-    }
 
     // Implement doPost and doDelete methods for adding, updating, or deleting courses
 

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Courses Page</title>
+    <title>Student Page</title>
 </head>
 <body>
-    <h1>Welcome to the Courses Page</h1>
-    <!-- Display courses here -->
-    <script>
-        // Use AJAX to fetch courses from /courses endpoint and display them
-    </script>
+	<h1>Welcome to Student Page</h1>
+    <form action="courses" method="post">
+		<p>Search the course</p>
+        <label for="courseId">Enter Course ID:</label>
+        <input type="text" id="courseId" name="courseId">
+        <input type="submit" value="Search">
+    </form>
 </body>
-</html>
+</html

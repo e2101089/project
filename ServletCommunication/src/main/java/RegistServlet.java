@@ -31,7 +31,7 @@ public class RegistServlet extends HttpServlet {
 	try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mariadb://mariadb.vamk.fi/e2101089_java_demo","e2101089","yeBvxVDHGWV");
-			ps = conn.prepareStatement("INSERT INTO Students (name, email, age, password) VALUES(?, ?, ?, ?)");
+			ps = conn.prepareStatement("INSERT INTO Students (name, email, password) VALUES(?, ?, ?)");
 		} catch(SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -42,9 +42,7 @@ public class RegistServlet extends HttpServlet {
 		String name = req.getParameter("name");
 		String email = req.getParameter("email");
 		String password = req.getParameter("password");
-		String hashedpassword = req.getParameter("hashedpassword");
-		int age = Integer.parseInt(req.getParameter("age"));
-
+	
 		RequestDispatcher reqDis;
 		if (!isValidEmail(email)) {
 	        reqDis = req.getRequestDispatcher("register.html");
@@ -60,22 +58,19 @@ public class RegistServlet extends HttpServlet {
 	        if (emailResult.next()) {
 	            // Email already exists, treat it as unsuccessful
 	            reqDis = req.getRequestDispatcher("login.html");
-	            req.setAttribute("message", "Email already exists");
+	            req.setAttribute("message", "Email already exists");	           
 	            reqDis.include(req, res);
 	        } else {
 	            // Email doesn't exist, proceed with registration
 	        	ps.setString(1, name);
 	            ps.setString(2, email);
 	            ps.setString(3, password);
-	            ps.setString(4, hashedpassword);
-	            ps.setInt(5, age);
 	            resultSet = ps.executeUpdate();
 	if (resultSet > 0) {
 		//regist success
-		System.out.println("Demo");
-		reqDis = req.getRequestDispatcher("students.html");
 		req.setAttribute("message", "registration successfully");
-		reqDis.forward(req, res);
+		  RequestDispatcher reqDis1 = req.getRequestDispatcher("login.html");
+		reqDis1.forward(req, res);
 	} else {
 		//regist unsuccessful
 		reqDis = req.getRequestDispatcher("RegistServlet");

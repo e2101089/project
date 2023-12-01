@@ -1,4 +1,5 @@
  import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 
 @WebServlet("/loginServlet")
 public class loginServlet extends HttpServlet {
@@ -36,22 +38,22 @@ public class loginServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String hashedPasswordFromDB = rs.getString("password");
+                String PasswordFromDB = rs.getString("password");
                 // Use a secure method to compare hashed passwords (e.g., BCrypt)
                 // Replace this comparison with your actual password comparison method
-                if (isPasswordCorrect(password, hashedPasswordFromDB)) {
+                if (password.equals(PasswordFromDB)) {
                     // Authentication successful, create a session and redirect
                     request.getSession().setAttribute("email", email);
-                    response.sendRedirect("/students"); // Redirect to students' page
+                    response.sendRedirect(request.getContextPath() + "/studentAdministration.html");
                     return;
                 } else {
                     // Incorrect password
-                    response.sendRedirect("/login.html?error=incorrect_password");
+                	 response.sendRedirect(request.getContextPath() + "/login.html");
                     return;
                 }
             } else {
                 // Email not found in the database
-                response.sendRedirect("/login.html?error=email_not_found");
+            	 response.sendRedirect(request.getContextPath() + "/login.html");
                 return;
             }
         } catch (SQLException e) {
@@ -60,14 +62,5 @@ public class loginServlet extends HttpServlet {
 
         // Authentication failed due to an unknown reason
         response.sendRedirect("/login.html?error=authentication_failed");
+    } 
     }
-
-    // Implement a secure method to compare hashed passwords
-    private boolean isPasswordCorrect(String enteredPassword, String hashedPasswordFromDB) {
-        // Implement your password comparison logic here (e.g., using a library like BCrypt)
-        // Return true if passwords match; otherwise, return false
-        // Example: return BCrypt.checkpw(enteredPassword, hashedPasswordFromDB);
-        // Replace this with your actual password comparison logic
-        return enteredPassword.equals(hashedPasswordFromDB);
-    }
-}

@@ -30,7 +30,7 @@ public class RegistServlet extends HttpServlet {
 	    String dbPassword = context.getInitParameter("db_password");
 	try {
 			Class.forName("org.mariadb.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mariadb://mariadb.vamk.fi/e2101089_java_demo","e2101089","yeBvxVDHGWV");
+			conn = DriverManager.getConnection("jdbc:mariadb://mariadb.vamk.fi/e2101089_java_demo", "e2101089", "yeBvxVDHGWV");
 			ps = conn.prepareStatement("INSERT INTO Students (name, email, password) VALUES(?, ?, ?)");
 		} catch(SQLException | ClassNotFoundException e) {
 			e.printStackTrace();

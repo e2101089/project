@@ -15,7 +15,7 @@
             margin-bottom: 30px;
             color: #007bff;
         }
-        form {
+        .container {
             width: 50%;
             margin: 0 auto;
             background-color: #fff;
@@ -23,41 +23,29 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        p {
+        .option-link {
             text-align: center;
             margin-bottom: 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"], input[type="submit"] {
-            width: calc(100% - 22px);
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
-            width: 100%;
-            background-color: #007bff;
+        .option-link a {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
             color: #fff;
-            font-weight: bold;
-            cursor: pointer;
+            background-color: #007bff;
+            border-radius: 4px;
             transition: background-color 0.3s ease;
         }
-        input[type="submit"]:hover {
+        .option-link a:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to Student Page</h1>
-    <form action="students" method="post">
-        <p>Search for a student</p>
-        <label for="studentId">Enter Student ID:</label>
-        <input type="text" id="studentId" name="studentId" required>
-        <input type="submit" value="Search">
-    </form>
+    <div class="container">
+        <h1>Welcome to Student Page</h1>
+        <div class="option-link"><a href="student">View All Students</a></div>
+        <!-- You can add more links/buttons here for other functionalities -->
+    </div>
 </body>
 </html>

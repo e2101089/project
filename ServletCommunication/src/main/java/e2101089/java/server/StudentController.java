@@ -37,7 +37,7 @@ public class StudentController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
 
-        res.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.addHeader("Access-Control-Allow-Origin", "http://mariadb.vamk.fi/e2101089_java_demo");
         res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST, DELETE");
 
         if (pathInfo == null || pathInfo.equals("/")) {
@@ -65,7 +65,7 @@ public class StudentController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-        res.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        res.addHeader("Access-Control-Allow-Origin", "http://mariadb.vamk.fi/e2101089_java_demo");
         res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST, DELETE");
 
         String pathInfo = req.getPathInfo();

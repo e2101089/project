@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class studentDAO {
-    private String jdbcURL = "jdbc:mariadb://localhost:3306/mydb";
-    private String jdbcUserName = "root";
-    private String jdbcPassword = "root";
+    private String jdbcURL =  "jdbc:mariadb://mariadb.vamk.fi/e2101089_java_demo";
+    private String jdbcUserName = "e2101089";
+    private String jdbcPassword = "HACAzsRBjXq";
 
     // Constructors
     public studentDAO(String url, String userName, String password) {

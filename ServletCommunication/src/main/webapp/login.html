@@ -3,6 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        form {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        table {
+            width: 100%;
+        }
+        td {
+            padding: 8px 0;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"] {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #error-container {
+            text-align: center;
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <form method="post" action="loginServlet">
@@ -14,11 +65,11 @@
         <table>
             <tr>
                 <td>Email</td>
-                <td><input name="email" /></td>
+                <td><input name="email" required /></td>
             </tr>
             <tr>
                 <td>Password</td>
-                <td><input name="password" type="password" /></td>
+                <td><input name="password" type="password" required/></td>
             </tr>
             <tr>
                 <td></td>
@@ -36,11 +87,13 @@
         if (error === 'incorrect_password') {
             const errorDiv = document.createElement('div');
             errorDiv.textContent = 'Incorrect password. Please try again.';
-            errorDiv.style.color = 'red'; // Style the error message
+            errorDiv.id = 'error-message';
 
             // Append this errorDiv after the form
-            document.getElementsByTagName('form')[0].insertAdjacentElement('afterend', errorDiv);
+            document.getElementById('error-container').appendChild(errorDiv);
         }
     </script>
 </body>
+</html>
+
 </html>
